@@ -359,7 +359,7 @@ In the example, it gets out of the call stack and then after the timer expires, 
 - Event listeners consume a lot of memory which can potentially slow down the website therefore it is good practice to remove if it is not used.
 - Garbage Collection - need to remove event listeners as they form a lot of closures with the variables in kexical scope, and thus making it heavy
 
-## Ep-15 : Event Loop
+## Ep-15 : Event Loop and Callback Queue
 
 1. Firstly, a **Global Execution Context (GEC)** is created.
 2. The GEC is pushed into the **Call Stack**.
@@ -385,16 +385,115 @@ Not possible - call stack executes everything immediately - no waiting (it doesn
 - Browser -> JS Engine -> call Stack 
 
 Browser contains -
+- Console
+- Timer (setTimeout)
 - Local Storage
 - JS Engine
-- Timer
 - url
 - fetch - communication to servers
-- DOM APIs
-- Console
+- DOM APIs - like addEventListeners
 - UI
+- Promise handling
+- MutationObserver
 - Bluetooth
 - Geolocation
+- File system access in Node.js
 - etc ...
+
+**Web APIs**: These come from the browser, **not** a part of JS. Browser gives access to these inside the JS engine so we can use them. \
+These all can be accessed using the **global object (window)**
+- console
+- setTimeout()
+- fetch()
+- localStorage
+- DOM APIs
+- location
+
+![Web APIs](./images/Web%20APIs.png)
+
+```
+console.log("Start");
+
+setTimeout(function cb(){
+  console.log("callback");
+}, 5000);
+
+console.log("End");
+```
+
+1. actually calls the Web API of console which in turn makes a call to log something inside the actual console, thus enables the JS engine to print 'Start' on console.
+2. calls web API of setTimeout giving access to timer feature of browser
+3. registers a callback 
+4. starts the timer of 5000ms
+5. code resumes from next line, doesn't wait for anything
+6. 'End' is printed on console.
+7. code execution ends, while timer is still runnning.
+8. GEC popped out of stack
+9. Now to execute the callback function code, it needs to be inside the call stack first somehow - 
+
+#### Event Loop and Callback Queue
+
+10. When *timer expires*, the callback function moves into the **callback queue**
+11. **Event Loop** checks the callback queue and puts the function inside it into the call stack
+12. Call stack then quickly executes the received callback function
+  - creates EC of callback fn
+  - prints 'callback' into console
+
+
+![Callback Queue and Event Loop](./images/Callback%20Queue.png)
+
+**AddEventListeners** : registers a callback and attaches the event to it
+
+The whole GEC and code execution part remains the same, they don't wait for anything. \
+But in case of **event listener**s, when the **callback is registered**, it also **attaches the event with it** ('click' in this case). \
+Then remaining code executes. \
+But event handler callback fn sits there until its explicitly removed or browser is closed. (because it can be clicked anytime - so cannot be removed until the end) \
+When click event occurs, **callback fn is pushed to the callback queue**. \
+**Event loop repeatedly checks** if something is present in the CBQ, and if call stack is empty. \
+As soon as CS is empty, and CBQ has something to be executed, it pushes that fn into CS \
+
+
+Q. Why is Callback Queue required? Why can't the event loop directly push the fn into call stack as soon as it sees them?
+
+- In case of multiple callbacks, they need to be queued and execeuted one by one (like clicking button 5-6 times repeatedly) -> all need to be executed one by one, and each is popped of the CBQ.
+
+#### fetch
+
+![Fetch and Microtask Queue](./images/Fetch.png)
+
+#### Microtask Queue (Promise Queue) - MTQ
+Higher priority callbacks from:
+- Promises (.then, .catch, .finally) from network calls like fetch
+- async/await
+- MutationObserver (checks for mutation in the DOM tree)
+
+Till all the tasks in Microtask queue are not executed, the event loop doesn't add any task from CBQ to call stack
+
+#### Callback Queue - CBQ
+Lower priority callback tasks:
+- setTimeout
+- setInterval
+- DOM events (like "click")
+- other callbacks
+After all MTQ tass are over, it adds callback events to CS one by one
+
+#### Event loop
+Repeatedly checks - callback queue, microtask queue and call stack. \
+
+If Call Stack is empty:
+ - first check MTQ (higher in priority)
+ - if it contains a fn, then remove it from queue and push it to call stack
+ - execute it
+ - check for next task in that queue
+
+ If MTQ is empty:
+ - check callback queue (lower priority) 
+ - execute all fns one by one by adding to CS
+
+*Priority*: GEC (main code execution) -> Microtask Queue callbacks execution -> Callback Queue callbacks execution
+
+
+## Ep-16 : JS Engine
+
 
 
