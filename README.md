@@ -17,7 +17,7 @@
 
 take example:
 
-```
+```javascript
 1 var n = 2;
 2 function square(num){
 3     var ans = num*num;
@@ -117,7 +117,6 @@ Even without any line of code -
 | automatically attached to the global object | create global variables, but not global properties - Means they ARE accessible everywhere but they DO NOT appear inside window |
 | hoisted and accessible anywhere             | hoisted, but can't be used before initializing the value                                                                       |
 
-
 ## Ep-06 : undefined vs not defined
 
 ---
@@ -129,7 +128,7 @@ Even without any line of code -
 - needed because :
   - placeholder for variables that don't have a value yet
   - functions in JS must return something, if it is not, undefined is used
-    ```
+    ```javascript
     function foo() {}
     foo(); // returns undefined
     ```
@@ -147,14 +146,15 @@ Even without any line of code -
 
 **Scope Chain** : Chain of all lexical environments in hierarchical order
 
-## Ep-08 : *let* & *const* and Temporal Dead Zone
+## Ep-08 : _let_ & _const_ and Temporal Dead Zone
 
 **Temporal Dead Zone**:
 
 - The period between when a variable is declared (in memory), and when its initialized with value
 - This prevents bugs caused by accidentally using variables before they are ready
 - Trying to access a variable inside TDZ gives _ReferenceError_
-  ```
+
+  ```javascript
   console.log(a);
   let a = 2;
   ```
@@ -207,7 +207,7 @@ let and const :
 - When a function returns an inner function
 - Closure is created when inner function remembers variables from its outer function even after outer one has finished executing
 - A function forms a closure with the scope where it is declared,
-not with the scope where it is invoked.
+  not with the scope where it is invoked.
 - Uses of closures:
   - async programming
   - callbacks
@@ -221,18 +221,21 @@ not with the scope where it is invoked.
   - functions like once
   - setTimeouts
   - Iterators
+
 ## Ep-11 : Closures
 
 ## Ep-12 : Closures
 
+#### setTimeout
 
-#### setTimeout 
 ---
+
 An interesting thing about setTimeout - it may not always take the same time as we want it to, depending on the CS.
-- If the CS is blocked by millions of lines of code, that need 10s to execute, and the timeout had 5s timer. 
+
+- If the CS is blocked by millions of lines of code, that need 10s to execute, and the timeout had 5s timer.
 - Then, timeout callback fn can execute only after the CS becomes empty, be it 3s, 10s or 5s.
 - So, we were expecting it after 5s, but it will execute after CS is empty after 10s.
-- *Even if the timer is set to only 0s, still it will firstly go through callback queue, and then be executed after everything in CS has finished executing.*
+- _Even if the timer is set to only 0s, still it will firstly go through callback queue, and then be executed after everything in CS has finished executing._
 
 ## Ep-13 : First Class and Anonymous functions
 
@@ -240,7 +243,7 @@ An interesting thing about setTimeout - it may not always take the same time as 
 
 Creating a function in this way is a function statement
 
-```
+```javascript
 function a(){
     console.log("This is fun statement");
 }
@@ -252,7 +255,7 @@ a();
 
 Assigning a function to a variable, where the function acts like a value
 
-```
+```javascript
 var b = function(){
     console.log("Function Expression");
 }
@@ -274,9 +277,9 @@ b();
 - Functions without a name
 - Can be created when functions are to be used as values assigned to variables
 
-```
+```javascript
 var a = function (){
-    console.log("Anonymous");
+  console.log("Anonymous");
 }
 ```
 
@@ -284,7 +287,7 @@ var a = function (){
 
 When named function is assigned to variable
 
-```
+```javascript
 var a = function b(){
     console.log("named function expression");
 }
@@ -301,65 +304,65 @@ var a = function b(){
 - Also called **First Class Citizens**
 - Passing functions inside other functions as arguments
 
-```
-var b = function (fcf){  //passing fn as parameter to another fn b
-    console.log(fcf);
-}
+  ```javascript
+  var b = function (fcf){  //passing fn as parameter to another fn b
+      console.log(fcf);
+  }
 
-function xyz(){  //FCF
-    console.log("First Class Function");
-}
+  function xyz(){  //FCF
+      console.log("First Class Function");
+  }
 
-b(xyz); //Calling a fn with fn as argument
-```
+  b(xyz); //Calling a fn with fn as argument
+  ```
 
 - We can also return a function from a fn
 
-```
-var b = function (param){
-    return function xyz(){
+  ```javascript
+  var b = function (param){
+      return function xyz(){
 
-    }
-}
-console.log(b());
-```
+      }
+  }
+  console.log(b());
+  ```
 
 ## Ep-14 : Callback Functions
 
 - JS is a synchronous single-threaded language
 - Passing a function to another function -> passed fn is callback fn
 
-```
-setTimeout(function(){
-console.log("timer");
-}, 3000);
+  ```javascript
+  setTimeout(function(){
+  console.log("timer");
+  }, 3000);
 
-function x(a){
-    console.log("x");
-    a();
-}
+  function x(a){
+      console.log("x");
+      a();
+  }
 
-x(function y(){
-    console.log("y");
-}); //pass y inside x
-```
+  x(function y(){
+      console.log("y");
+  }); //pass y inside x
+  ```
 
 - setTimeout is registered
 - stored at a separate place, with a timer of 3s attached to it
 - Meanwhile, program will remain executing
 - x is called
-- Prints: 
-    - x
-    - y
-    - timer (after 3s)
+- Prints:
+  - x
+  - y
+  - timer (after 3s)
 
-*Blocking the main thread* - Any operation blocking the call stack \
-To avoid it, use async operations (like setTimeout) for heavy, time taking tasks 
+_Blocking the main thread_ - Any operation blocking the call stack \
+To avoid it, use async operations (like setTimeout) for heavy, time taking tasks
 
 In the example, it gets out of the call stack and then after the timer expires, it appears again in the call stack and resumes program
 
-
 #### Event Listeners
+
 - Event listeners can also invoke closures with scope.
 - Event listeners consume a lot of memory which can potentially slow down the website therefore it is good practice to remove if it is not used.
 - Garbage Collection - need to remove event listeners as they form a lot of closures with the variables in kexical scope, and thus making it heavy
@@ -378,18 +381,21 @@ In the example, it gets out of the call stack and then after the timer expires, 
 10. The remaining global code (after the function call) **resumes execution**.
 11. The last line of the global code executes.
 12. The **GEC is popped out of call stack**
+
 ---
+
 Call Stack executes whatever is pushed to it **immediately** - doesn't wait for anything.
 
-*But what if we need to wait for something??*
+_But what if we need to wait for something??_
 
 Not possible - call stack executes everything immediately - no waiting (it doesn't have a timer)
- 
 
 #### Browser - Superpowers
-- Browser -> JS Engine -> call Stack 
+
+- Browser -> JS Engine -> call Stack
 
 Browser contains -
+
 - Console
 - Timer (setTimeout)
 - Local Storage
@@ -407,6 +413,7 @@ Browser contains -
 
 **Web APIs**: These come from the browser, **not** a part of JS. Browser gives access to these inside the JS engine so we can use them. \
 These all can be accessed using the **global object (window)**
+
 - console
 - setTimeout()
 - fetch()
@@ -416,7 +423,7 @@ These all can be accessed using the **global object (window)**
 
 ![Web APIs](./images/Web%20APIs.png)
 
-```
+```javascript
 console.log("Start");
 
 setTimeout(function cb(){
@@ -428,22 +435,22 @@ console.log("End");
 
 1. actually calls the Web API of console which in turn makes a call to log something inside the actual console, thus enables the JS engine to print 'Start' on console.
 2. calls web API of setTimeout giving access to timer feature of browser
-3. registers a callback 
+3. registers a callback
 4. starts the timer of 5000ms
 5. code resumes from next line, doesn't wait for anything
 6. 'End' is printed on console.
 7. code execution ends, while timer is still runnning.
 8. GEC popped out of stack
-9. Now to execute the callback function code, it needs to be inside the call stack first somehow - 
+9. Now to execute the callback function code, it needs to be inside the call stack first somehow -
 
 #### Event Loop and Callback Queue
 
-10. When *timer expires*, the callback function moves into the **callback queue**
+10. When _timer expires_, the callback function moves into the **callback queue**
 11. **Event Loop** checks the callback queue and puts the function inside it into the call stack
 12. Call stack then quickly executes the received callback function
-  - creates EC of callback fn
-  - prints 'callback' into console
 
+- creates EC of callback fn
+- prints 'callback' into console
 
 ![Callback Queue and Event Loop](./images/Callback%20Queue.png)
 
@@ -457,8 +464,7 @@ When click event occurs, **callback fn is pushed to the callback queue**. \
 **Event loop repeatedly checks** if something is present in the CBQ, and if call stack is empty. \
 As soon as CS is empty, and CBQ has something to be executed, it pushes that fn into CS \
 
-
-*Q. Why is Callback Queue required? Why can't the event loop directly push the fn into call stack as soon as it sees them?*
+_Q. Why is Callback Queue required? Why can't the event loop directly push the fn into call stack as soon as it sees them?_
 
 - In case of multiple callbacks, they need to be queued and execeuted one by one (like clicking button 5-6 times repeatedly) -> all need to be executed one by one, and each is popped of the CBQ.
 
@@ -467,7 +473,9 @@ As soon as CS is empty, and CBQ has something to be executed, it pushes that fn 
 ![Fetch and Microtask Queue](./images/Fetch.png)
 
 #### Microtask Queue (Promise Queue) - MTQ
+
 Higher priority callbacks from:
+
 - Promises (.then, .catch, .finally) from network calls like fetch
 - async/await
 - MutationObserver (checks for mutation in the DOM tree)
@@ -475,34 +483,39 @@ Higher priority callbacks from:
 Till all the tasks in Microtask queue are not executed, the event loop doesn't add any task from CBQ to call stack
 
 #### Callback Queue - CBQ
+
 Lower priority callback tasks:
+
 - setTimeout
 - setInterval
 - DOM events (like "click")
 - other callbacks
-After all MTQ tass are over, it adds callback events to CS one by one
+  After all MTQ tass are over, it adds callback events to CS one by one
 
 #### Event loop
+
 Repeatedly checks - callback queue, microtask queue and call stack. \
 
 If Call Stack is empty:
- - first check MTQ (higher in priority)
- - if it contains a fn, then remove it from queue and push it to call stack
- - execute it
- - check for next task in that queue
 
- If MTQ is empty:
- - check callback queue (lower priority) 
- - execute all fns one by one by adding to CS
+- first check MTQ (higher in priority)
+- if it contains a fn, then remove it from queue and push it to call stack
+- execute it
+- check for next task in that queue
 
-*Priority*: GEC (main code execution) -> Microtask Queue callbacks execution -> Callback Queue callbacks execution
+If MTQ is empty:
 
+- check callback queue (lower priority)
+- execute all fns one by one by adding to CS
+
+_Priority_: GEC (main code execution) -> Microtask Queue callbacks execution -> Callback Queue callbacks execution
 
 ## Ep-16 : JS Engine
 
 JS can run inside - browser, server, smartwatch, robots, light bulb, IoT devices, etc. because of the JS Runtime Environment
 
 JS Runtime Environment has:
+
 - JS Engine
 - Callback Queue
 - Microtask Queue
@@ -516,39 +529,45 @@ Javascript Runtime Environment can be understood as a container that has everyth
 There are two major runtime env: Browser and NodeJS which contain some similar/common and some different APIs.
 
 ---
+
 ### Inside the JS Engine
-Takes human-readable code as input which undergoes 3 steps: 
+
+Takes human-readable code as input which undergoes 3 steps:
+
 - Parsing - Code is broken into tokens and is parsed
-- Compilation - 
-- Execution - 
+- Compilation -
+- Execution -
 
 ![V8 Engine](./images/V8%20Engine.png)
 
 #### **Parsing**
+
 - Break the code into tokens
 - **Syntax parser** - convert the code to AST ([Abstract Syntax Tree](https://astexplorer.net/))
 
 #### **Compilation**
 
 Q. What is interpreter and compiler?
-   
-  **Interpreter** executes the code line-by-line, without knowing about the next line 
 
-  **Compiler** compiles the whole code before executing anything. It forms a compiled and optimized version of the code 
+**Interpreter** executes the code line-by-line, without knowing about the next line
 
-| Feature | Interpreter | Compiler |
-|---------|-------------|----------|
-| **Execution Method** | Executes code **line-by-line** | Translates **entire program** before running |
-| **Output** | No intermediate output; runs directly | Produces compiled **machine code / bytecode** |
-| **Execution Speed** | Slower (work is repeated at runtime) | Faster (fully optimized before running) |
-| **Startup Time** | Very fast but less efficient | Slower (needs compilation first) - More efficient |
-| **Error Detection** | Errors appear **during runtime** | Errors appear **before execution** |
-| **Memory Usage** | Often higher | Usually lower after compilation |
-| **Use Case** | Good for scripting, quick testing | Good for large, performance-critical apps |
-| **Examples** | JavaScript (originally), Python, PHP, Ruby | C, C++, Rust, Go, Java (JVM bytecode) |
+**Compiler** compiles the whole code before executing anything. It forms a compiled and optimized version of the code
+
+| Feature              | Interpreter                                | Compiler                                          |
+| -------------------- | ------------------------------------------ | ------------------------------------------------- |
+| **Execution Method** | Executes code **line-by-line**             | Translates **entire program** before running      |
+| **Output**           | No intermediate output; runs directly      | Produces compiled **machine code / bytecode**     |
+| **Execution Speed**  | Slower (work is repeated at runtime)       | Faster (fully optimized before running)           |
+| **Startup Time**     | Very fast but less efficient               | Slower (needs compilation first) - More efficient |
+| **Error Detection**  | Errors appear **during runtime**           | Errors appear **before execution**                |
+| **Memory Usage**     | Often higher                               | Usually lower after compilation                   |
+| **Use Case**         | Good for scripting, quick testing          | Good for large, performance-critical apps         |
+| **Examples**         | JavaScript (originally), Python, PHP, Ruby | C, C++, Rust, Go, Java (JVM bytecode)             |
+
 |
 
 ### JIT Compilation
+
 JS uses both interpreter and compiler to exceute the code.
 
 Parsing -> reads code and generates the AST \
@@ -556,13 +575,17 @@ Interpreter -> generates bytecode from high-level code and executes it \
 Compiler -> optimizes the code on runtime
 
 Step-wise JIT Compilation:
-1. *Parser* : reads code and generates tokens and creates the AST
-2. *Interpreter* (Ignition) : generates bytecode from high-level code and executes it
+
+1. _Parser_ : reads code and generates tokens and creates the AST
+2. _Interpreter_ (Ignition) : generates bytecode from high-level code and executes it
+
 - **Ignition** is the name of interpreter used by V8 engine
-- Provides *fast* startup
-- Takes the *AST* and produces its *bytecode* which is fast and lightweight
+- Provides _fast_ startup
+- Takes the _AST_ and produces its _bytecode_ which is fast and lightweight
 - Reads that code line-by-line and exceutes it immediately
-3. *Compiler* : Performs optimizations on bytecode
+
+3. _Compiler_ : Performs optimizations on bytecode
+
 - **Turbofan** is the name of compiler used by V8 engine
 - Optimization done in phases.
 - If a function is executed many times - Turbofan says: “This code is hot — let’s optimize it.”
@@ -575,11 +598,12 @@ Step-wise JIT Compilation:
 #### Execution
 
 Requires the Memory Heap and Call Stack
-- **Memory Heap** - where all variables and functions are assigned memory. It stores: 
+
+- **Memory Heap** - where all variables and functions are assigned memory. It stores:
   - objects,
-  - arrays, 
-  - functions, 
-  - closures, 
+  - arrays,
+  - functions,
+  - closures,
   - reference types
 - **Call Stack** - It stores:
   - function calls
@@ -588,44 +612,53 @@ Requires the Memory Heap and Call Stack
   - scopes
 - **Garbage Collector** - JavaScript automatically frees memory that is no longer needed.
 
-#### ***Mark-and-sweep algorithm***
+#### **_Mark-and-sweep algorithm_**
+
 ---
 
 GC works like:
 
 - **Mark** objects that are still reachable, i.e., can still be accessed. GC starts from root objects: global object (window / global) -> local variables on stack -> closures. \
+
   - It traverses the object graph and marks reachable objects -> “live”.
 
   - Objects not reached → “garbage”.
+
 - **Sweep** (delete) objects that are not reachable anymore. Frees memory of unmarked objects and keeps marked ones.
 
 After function finishes:
+
 - Marked object is no longer reachable.
 - GC deletes the object from heap.
 
 ### Optimizing techniques Concepts :
+
 ---
+
 **Inlining**: It is an optimization where the JS engine replaces a function call with the actual body of the function.
 
-*Why*? 
+_Why_?
+
 - Function calls are expensive (stack ops, context creation).
 - If a function is small & predictable, it’s cheaper to paste its body inline.
 
-```
-//BEFORE INLINING
-function add(a, b) { return a + b; }
-let x = add(2, 3);
------------------------
-//AFTER INLINING
-let x = 2 + 3;
-```
+  ```javascript
+  //BEFORE INLINING
+  function add(a, b) { return a + b; }
+  let x = add(2, 3);
+  -----------------------
+  //AFTER INLINING
+  let x = 2 + 3;
+  ```
 
-*When the engine inlines*:
+_When the engine inlines_:
+
 - Function is small
 - Parameters are predictable types
 - Execution pattern is stable
 
-*When it avoids inlining*:
+_When it avoids inlining_:
+
 - Mega functions
 - Function used with unpredictable types
 - Deep recursion
@@ -634,91 +667,101 @@ let x = 2 + 3;
 
 **Copy Elision** : Copy Elision is an optimization where unnecessary intermediate objects or values are not created at all — the engine allocates the final object directly.
 
-*Why?* 
+_Why?_
+
 - Creating short-lived objects is expensive.
 - JS engines try to skip useless intermediate allocations.
 
-```
-function getPoint() {
-    return { x: 10, y: 20 }; 
-}
-```
+  ```javascript
+  function getPoint() {
+      return { x: 10, y: 20 };
+  }
+  ```
+
 A naive implementation:
+
 1. Creates {x:10,y:20}
 2. Copies it to the return slot
 
 Optimized implementation:
+
 1. Directly creates the object in the return location
-→ no extra temporary object is created
+   → no extra temporary object is created
 
 Copy elision happens during:
+
 - Return statements
 - Array spreads
 - Object spreads
 
 ---
+
 **Inline Caching (IC)** : Inline caching is a JIT optimization where the engine remembers the type/shape of objects to speed up property access.
 
-*Why ?* \
+_Why ?_ \
 JS objects are **dynamic**: properties can appear, disappear, or change types. \
 Accessing properties is slow if the engine has to lookup every time. \
--> ***IC solves this.***
+-> **_IC solves this._**
 
-*How it works ?*
+_How it works ?_
 
 Consider:
-```
+
+```javascript
 function printUser(u) {
-    console.log(u.name);
+  console.log(u.name);
 }
 ```
 
 If called repeatedly with similar objects:
-```
+
+```javascript
 printUser({ name: "A" });
 printUser({ name: "B" });
 ```
+
 - V8 notices u always has the same shape (same properties).
 - It “caches” where .name property lives in memory.
 - Next time, it directly jumps to that memory location.
 
-*Effects:*
+_Effects:_
+
 - 20x faster property access.
 - Predictability = optimization.
 
-*Types of IC:*
+_Types of IC:_
+
 1. Monomorphic → Same shape always (fastest!)
 2. Polymorphic → Few shapes
 3. Megamorphic → Too many shapes → deoptimized
 
-Google's V8 engine has Garbage Collector - ***Orinoco***, for JS garbage colection and ***Oilpan*** for DOM and browser objects.
+Google's V8 engine has Garbage Collector - **_Orinoco_**, for JS garbage colection and **_Oilpan_** for DOM and browser objects.
 
 - Chrome JS Engine - **V8**
 - Chrome rendering engine - **Blink**
 - GC for Blink (DOM & Browser objects) - **Oilpan**
 - GC for V8 with modern architecture - **Orinoco**
 
-
 ## V8 GC vs Orinoco vs Oilpan — Comparison
 
-| Feature | V8 GC | Orinoco | Oilpan |
-|--------|--------|----------|---------|
-| **What it is** | The entire garbage collection system inside the V8 JavaScript engine | The *modern GC architecture* inside V8 | Garbage collector for DOM + Blink objects |
-| **Manages memory for** | JavaScript objects | JavaScript objects (young + old gen) | DOM nodes, CSS objects, Blink engine structures |
-| **Part of** | V8 engine | V8 engine | Blink rendering engine |
-| **Replaces** | Older generational GC systems | Replaces older V8 GC implementation | Replaces manual memory management & ref-counting in Blink |
-| **GC Type** | Generational, mark-sweep, mark-compact | Concurrent + incremental + parallel GC | Tracing GC integrated with V8 (Unified Heap) |
-| **Concurrency** | Older versions mostly stop-the-world | Highly concurrent & low-latency | Works with V8 concurrently |
-| **Handles JS ↔ DOM cycles?** | No | No | Yes (Unified heap solves cycles) |
-| **Optimized for** | Speed of JS execution | Low-latency GC for JS | Automatic cleanup of DOM and browser-side objects |
-| **Main Components** | New space GC + old space GC | Concurrent marking, parallel sweeping, incremental compaction | Blink heap, conservative stack scanning |
-| **Goal** | Run JS fast | Low-latency, high-performance memory management | Prevent memory leaks in DOM, unify JS & DOM GC |
+| Feature                      | V8 GC                                                                | Orinoco                                                       | Oilpan                                                    |
+| ---------------------------- | -------------------------------------------------------------------- | ------------------------------------------------------------- | --------------------------------------------------------- |
+| **What it is**               | The entire garbage collection system inside the V8 JavaScript engine | The _modern GC architecture_ inside V8                        | Garbage collector for DOM + Blink objects                 |
+| **Manages memory for**       | JavaScript objects                                                   | JavaScript objects (young + old gen)                          | DOM nodes, CSS objects, Blink engine structures           |
+| **Part of**                  | V8 engine                                                            | V8 engine                                                     | Blink rendering engine                                    |
+| **Replaces**                 | Older generational GC systems                                        | Replaces older V8 GC implementation                           | Replaces manual memory management & ref-counting in Blink |
+| **GC Type**                  | Generational, mark-sweep, mark-compact                               | Concurrent + incremental + parallel GC                        | Tracing GC integrated with V8 (Unified Heap)              |
+| **Concurrency**              | Older versions mostly stop-the-world                                 | Highly concurrent & low-latency                               | Works with V8 concurrently                                |
+| **Handles JS ↔ DOM cycles?** | No                                                                   | No                                                            | Yes (Unified heap solves cycles)                          |
+| **Optimized for**            | Speed of JS execution                                                | Low-latency GC for JS                                         | Automatic cleanup of DOM and browser-side objects         |
+| **Main Components**          | New space GC + old space GC                                          | Concurrent marking, parallel sweeping, incremental compaction | Blink heap, conservative stack scanning                   |
+| **Goal**                     | Run JS fast                                                          | Low-latency, high-performance memory management               | Prevent memory leaks in DOM, unify JS & DOM GC            |
 
+## Ep-18 : Higher Order Functions
 
-## Ep-18 : Higher Order Functions 
-
-A function which takes another function as an *argument* or *returns* a function from it is HOF. \
+A function which takes another function as an _argument_ or _returns_ a function from it is HOF. \
 JavaScript treats functions as first-class citizens, meaning:
+
 - You can store a function in a variable
 - Pass a function as an argument
 - Return a function
@@ -726,19 +769,23 @@ JavaScript treats functions as first-class citizens, meaning:
 - Use them just like data
 
 HOF examples: \
+
 - Array methods
-  - map() 
-  - filter() 
-  - reduce() 
+
+  - map()
+  - filter()
+  - reduce()
   - forEach()
   - find()
 
 - Promise functions
+
   - then()
-  - catch() 
+  - catch()
   - finally()
 
 - Timing functions
+
   - setTimeout(callback, time)
   - setInterval(callback, time)
 
@@ -746,49 +793,58 @@ HOF examples: \
   - button.addEventListener("click", handler)
 
 ---
+
 ---
+
 ---
 
 ## Ep-01 : Callback Hell
-Callbacks are useful when we want to perform some extra functionality with our already existing function for example passing an error handling callback to our already created function, 
-The two Problems with callbacks
-1) **Callback Hell**: When callbacks within themselves start taking in other functions as callbacks then that mess that you are left with is known as the Callback Hell. \
-It leads to unreadable code, hence unmaintanable and hard to test and debug. \
-It happens due to asynchronous operations that depend on each other. \
-This callback inside callback is called *Pyramid of Doom*.
 
-2) **Inversion Of Control**: When we pass a function to other function as a callback we are giving the called function the control of whether to even call it or not or maybe call it in a wrong context. For example a success callback is called when an error occours inside a called function (maybe due to human error while writing the code  for called function), this type of giving up of control over our functions is known as inversion of control.
+Callbacks are useful when we want to perform some extra functionality with our already existing function for example passing an error handling callback to our already created function,
+The two Problems with callbacks
+
+1. **Callback Hell**: When callbacks within themselves start taking in other functions as callbacks then that mess that you are left with is known as the Callback Hell. \
+   It leads to unreadable code, hence unmaintanable and hard to test and debug. \
+   It happens due to asynchronous operations that depend on each other. \
+   This callback inside callback is called _Pyramid of Doom_.
+
+2. **Inversion Of Control**: When we pass a function to other function as a callback we are giving the called function the control of whether to even call it or not or maybe call it in a wrong context. For example a success callback is called when an error occours inside a called function (maybe due to human error while writing the code for called function), this type of giving up of control over our functions is known as inversion of control.
 
 You hand over a callback to someone else (a library, API, event loop)
 and hope it executes correctly. If the library is buggy, your code fails.
 
 Problems with handing over:
+
 - You can’t control when it runs
 - You can’t control if it runs
 - You can’t control how many times it runs
 - You can’t enforce error handling
-- You can’t prevent multiple callback calls 
+- You can’t prevent multiple callback calls
 
 ## Ep-02 : Promises
 
-```
+```javascript
 createOrder(cart, function(orderId){
   proceedToPayment(orderId);
 });
 ```
- ***Inversion of Control*** \
-  is present. We expect createOrder function to call our proceedToPaymnet automatically, and thus losing control over ```proceedToPayment(orderId)```. 
 
-Solution: **Promise** 
+**_Inversion of Control_** \
+ is present. We expect createOrder function to call our proceedToPaymnet automatically, and thus losing control over `proceedToPayment(orderId)`.
+
+Solution: **Promise**
+
 - Instead of giving the control of our function to some other code, we can make it return a promise in place of taking the callback function.
-- ```createOrder``` is async operation. It can take any amount of time to execute, but we try to ensure whenever it completes, it returns us an object with some value.
+- `createOrder` is async operation. It can take any amount of time to execute, but we try to ensure whenever it completes, it returns us an object with some value.
 - This value can be initially undefined. But then, after 5s, when the function is complete, it will fill the value in object automatically with the returned value from async op.
 - Then we can attach a callback function to this promise object. So, when the data is filled with value, .then callback function will be called.
-*fetch() function returns a promise*
+  _fetch() function returns a promise_
 
-### *Promise object represents eventual completion (or failure) of an asynchronous operation and its resulting value.*
+### <mark>_Promise object represents eventual completion (or failure) of an asynchronous operation and its resulting value._</mark>
+
 #### Promise structure
-- Promise State: 
+
+- Promise State:
   - Pending - initial state
   - Fulfilled - operation completed successfully
   - Rejected - operation failed
@@ -796,18 +852,79 @@ Solution: **Promise**
 
 ![Promise Structure](./images/Promise%20Structure.png)
 
-#### -> *Promise objects are immutable*
+#### -> _Promise objects are immutable_
 
 ### Promise chaining
-Attach ```.then()``` after a promise which will automatically call the next function after the promise is completed(resolved or rejected).
 
-<mark>*Return value from a promise while doing promise chaining*</mark>
+Attach `.then()` after a promise which will automatically call the next function after the promise is completed(resolved or rejected).
+
+<mark>_Return value from a promise while doing promise chaining_</mark>:
+
 ![Promise chaining return value](./images/Promise%20Chaining.png)
 
+## Ep-03 Creating Promise
+
+A promise gets resolved or rejected based on success/failure of async operation.
+
+- It will be resolved exactly once or gets rejected. So, the uncertainity of callbacks is removed.
+
+Create promise using ```Promise()``` constructor that takes a callback function which has 2 args: resolve & reject. \
+Write logic for both - resolve and reject inside promise.
+
+![Creating a promise](./images/Create%20Promise.png)
 
 
+```javascript
+const promise = createOrder(cart);
 
+promise
+.then(
+  function(orderId){
+    console.log(orderId);
+  }
+)
+.catch(function(err){
+  console.log(err.message);
+})
 
+function createOrder(cart){
+  const val = new Promise(function(resolve, reject) {
+    if(false){
+      const err = new Error("Some error");
+      reject(err);
+    }
+    const orderId = "12345";
+    if(orderId) {
+      setTimeout(function(){
+        resolve(orderId);
+      }, 3000)
+    }
+  })
+}
+```
 
+**Promise chaining:**
+```javascript
+createOrder(cart)
+.then(function (orderId){
+  console.log(orderId);
+  //VERY IMPORTANT IN CHAINING: Return the data for next promise
+  return orderId;
+})
+.catch(function (err){
+  console.log("Cart is not valid");//Catches all errors on top of this
+  //.then() below this will still work
+})
+.then(function(orderId){
+  return proceedToPayment(orderId); 
+})
+.then(function (paymentInfo){
+  console.log(paymentInfo);
+})
+.catch(function (err){
+  console.log(err.message); //Catch block handles all errors on top of this.
+})
 
+//IF YOU NEED TO PROCEED WITH THE PROMISES EVEN IF Catch block caches an error, USE catch() multiple times, and the '.then()' after the .catch() will still execute.
+```
 
