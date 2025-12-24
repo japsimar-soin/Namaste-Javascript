@@ -158,6 +158,7 @@ Even without any line of code -
   console.log(a);
   let a = 2;
   ```
+
 - Till the time control doesn't reach line 2, "a" is present in the memory, but is not initialized, hence it is in TDZ.
 
 let and const :
@@ -244,8 +245,8 @@ An interesting thing about setTimeout - it may not always take the same time as 
 Creating a function in this way is a function statement
 
 ```javascript
-function a(){
-    console.log("This is fun statement");
+function a() {
+	console.log("This is fun statement");
 }
 //can be hoisted
 a();
@@ -256,9 +257,9 @@ a();
 Assigning a function to a variable, where the function acts like a value
 
 ```javascript
-var b = function(){
-    console.log("Function Expression");
-}
+var b = function () {
+	console.log("Function Expression");
+};
 //hoisting will throw an error
 b();
 ```
@@ -278,9 +279,9 @@ b();
 - Can be created when functions are to be used as values assigned to variables
 
 ```javascript
-var a = function (){
-  console.log("Anonymous");
-}
+var a = function () {
+	console.log("Anonymous");
+};
 ```
 
 #### **Named Function Expression**
@@ -288,9 +289,9 @@ var a = function (){
 When named function is assigned to variable
 
 ```javascript
-var a = function b(){
-    console.log("named function expression");
-}
+var a = function b() {
+	console.log("named function expression");
+};
 ```
 
 - variable 'a' can be called like this: `a();`
@@ -305,12 +306,14 @@ var a = function b(){
 - Passing functions inside other functions as arguments
 
   ```javascript
-  var b = function (fcf){  //passing fn as parameter to another fn b
-      console.log(fcf);
-  }
+  var b = function (fcf) {
+  	//passing fn as parameter to another fn b
+  	console.log(fcf);
+  };
 
-  function xyz(){  //FCF
-      console.log("First Class Function");
+  function xyz() {
+  	//FCF
+  	console.log("First Class Function");
   }
 
   b(xyz); //Calling a fn with fn as argument
@@ -319,11 +322,9 @@ var a = function b(){
 - We can also return a function from a fn
 
   ```javascript
-  var b = function (param){
-      return function xyz(){
-
-      }
-  }
+  var b = function (param) {
+  	return function xyz() {};
+  };
   console.log(b());
   ```
 
@@ -333,17 +334,17 @@ var a = function b(){
 - Passing a function to another function -> passed fn is callback fn
 
   ```javascript
-  setTimeout(function(){
-  console.log("timer");
+  setTimeout(function () {
+  	console.log("timer");
   }, 3000);
 
-  function x(a){
-      console.log("x");
-      a();
+  function x(a) {
+  	console.log("x");
+  	a();
   }
 
-  x(function y(){
-      console.log("y");
+  x(function y() {
+  	console.log("y");
   }); //pass y inside x
   ```
 
@@ -426,8 +427,8 @@ These all can be accessed using the **global object (window)**
 ```javascript
 console.log("Start");
 
-setTimeout(function cb(){
-  console.log("callback");
+setTimeout(function cb() {
+	console.log("callback");
 }, 5000);
 
 console.log("End");
@@ -674,7 +675,7 @@ _Why?_
 
   ```javascript
   function getPoint() {
-      return { x: 10, y: 20 };
+  	return { x: 10, y: 20 };
   }
   ```
 
@@ -709,7 +710,7 @@ Consider:
 
 ```javascript
 function printUser(u) {
-  console.log(u.name);
+	console.log(u.name);
 }
 ```
 
@@ -824,8 +825,8 @@ Problems with handing over:
 ## Ep-02 : Promises
 
 ```javascript
-createOrder(cart, function(orderId){
-  proceedToPayment(orderId);
+createOrder(cart, function (orderId) {
+	proceedToPayment(orderId);
 });
 ```
 
@@ -868,63 +869,101 @@ A promise gets resolved or rejected based on success/failure of async operation.
 
 - It will be resolved exactly once or gets rejected. So, the uncertainity of callbacks is removed.
 
-Create promise using ```Promise()``` constructor that takes a callback function which has 2 args: resolve & reject. \
+Create promise using `Promise()` constructor that takes a callback function which has 2 args: resolve & reject. \
 Write logic for both - resolve and reject inside promise.
 
 ![Creating a promise](./images/Create%20Promise.png)
-
 
 ```javascript
 const promise = createOrder(cart);
 
 promise
-.then(
-  function(orderId){
-    console.log(orderId);
-  }
-)
-.catch(function(err){
-  console.log(err.message);
-})
+	.then(function (orderId) {
+		console.log(orderId);
+	})
+	.catch(function (err) {
+		console.log(err.message);
+	});
 
-function createOrder(cart){
-  const val = new Promise(function(resolve, reject) {
-    if(false){
-      const err = new Error("Some error");
-      reject(err);
-    }
-    const orderId = "12345";
-    if(orderId) {
-      setTimeout(function(){
-        resolve(orderId);
-      }, 3000)
-    }
-  })
+function createOrder(cart) {
+	const val = new Promise(function (resolve, reject) {
+		if (false) {
+			const err = new Error("Some error");
+			reject(err);
+		}
+		const orderId = "12345";
+		if (orderId) {
+			setTimeout(function () {
+				resolve(orderId);
+			}, 3000);
+		}
+	});
 }
 ```
 
 **Promise chaining:**
+
 ```javascript
 createOrder(cart)
-.then(function (orderId){
-  console.log(orderId);
-  //VERY IMPORTANT IN CHAINING: Return the data for next promise
-  return orderId;
-})
-.catch(function (err){
-  console.log("Cart is not valid");//Catches all errors on top of this
-  //.then() below this will still work
-})
-.then(function(orderId){
-  return proceedToPayment(orderId); 
-})
-.then(function (paymentInfo){
-  console.log(paymentInfo);
-})
-.catch(function (err){
-  console.log(err.message); //Catch block handles all errors on top of this.
-})
+	.then(function (orderId) {
+		console.log(orderId);
+		//VERY IMPORTANT IN CHAINING: Return the data for next promise
+		return orderId;
+	})
+	.catch(function (err) {
+		console.log("Cart is not valid"); //Catches all errors on top of this
+		//.then() below this will still work
+	})
+	.then(function (orderId) {
+		return proceedToPayment(orderId);
+	})
+	.then(function (paymentInfo) {
+		console.log(paymentInfo);
+	})
+	.catch(function (err) {
+		console.log(err.message); //Catch block handles all errors on top of this.
+	});
 
 //IF YOU NEED TO PROCEED WITH THE PROMISES EVEN IF Catch block caches an error, USE catch() multiple times, and the '.then()' after the .catch() will still execute.
 ```
 
+## Ep-04 Promise APIs
+
+INPUT: Takes an _Iterable_ (like array/map/string/etc.)
+
+1. **Promise.all()** - Fail Fast
+
+OUTPUT: Array of promise values (success) / Error if any promise rejected
+
+- _All success_ - Returns array of resolved values after the last promise is resolved
+- _Any Error_ - Returns error (not array) as soon as any error is seen, not wait for other promises to settle
+
+2. **Promise.allSettled()**
+
+OUTPUT: Object -> Array of promise values (error or success) returned after all the promises are settled.
+
+- _All success_ - Returns array of promise values (success) after the last promise is resolved
+- _Any Error_ - Waits for all promises to settle, then returns array of resolved values or rejected errors in same order as input of promises
+
+3. **Promise.race()** 
+
+OUTPUT: Returns result of first settled promise (error or success)
+
+- _First success_ - Returns resolved value of first settled promise
+- _First Error_ - Returns Error of first settled promise
+
+4. **Promise.any()** - First Success Seeker
+
+OUTPUT: Returns result of first successfully resolved promise / AggregateError if all fail
+
+- _First success_ - Returns resolved value of first settled promise
+- _First Error_ - Waits for a promise to be successful (ignores rejected promises)
+- _All Error_ - AggregateError (Array of all errors in correct order)
+
+
+## Ep-05 Async Await
+
+Async function **always returns a promise**.
+
+- If I provide return value as promise, it returns that promise.
+- If I don't provide a promise, then it wraps the return value in a promise and then returns it as a promise.
