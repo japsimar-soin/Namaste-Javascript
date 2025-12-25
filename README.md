@@ -79,14 +79,14 @@ Even before the code starts executing, memory is allocated to all the vars and f
 
 ## Ep-04 : Functions
 
-Functions are added in the call stack on the top of GEC after they are invoked.
+Functions are added in the CS on the top of GEC after they are invoked.
 
 - Each function has its own execution context and memory + code component. \
   So even using same variable names in a function scope and in global scope won't throw an error because its scope will be limited to its EC and will finish as the control returns back to where the fun was invoked after the fun is completely executed.
 - After executing, for a function, its:
   - EC is deleted,
   - memory is freed,
-  - erased from call stack
+  - erased from CS
 
 ## Ep-05 : Shortest JS Program
 
@@ -357,10 +357,10 @@ var a = function b() {
   - y
   - timer (after 3s)
 
-_Blocking the main thread_ - Any operation blocking the call stack \
+_Blocking the main thread_ - Any operation blocking the CS \
 To avoid it, use async operations (like setTimeout) for heavy, time taking tasks
 
-In the example, it gets out of the call stack and then after the timer expires, it appears again in the call stack and resumes program
+In the example, it gets out of the CS and then after the timer expires, it appears again in the CS and resumes program
 
 #### Event Listeners
 
@@ -389,11 +389,11 @@ Call Stack executes whatever is pushed to it **immediately** - doesn't wait for 
 
 _But what if we need to wait for something??_
 
-Not possible - call stack executes everything immediately - no waiting (it doesn't have a timer)
+Not possible - CS executes everything immediately - no waiting (it doesn't have a timer)
 
 #### Browser - Superpowers
 
-- Browser -> JS Engine -> call Stack
+- Browser -> JS Engine -> Call Stack
 
 Browser contains -
 
@@ -442,13 +442,13 @@ console.log("End");
 6. 'End' is printed on console.
 7. code execution ends, while timer is still runnning.
 8. GEC popped out of stack
-9. Now to execute the callback function code, it needs to be inside the call stack first somehow -
+9. Now to execute the callback function code, it needs to be inside the CS first somehow -
 
 #### Event Loop and Callback Queue
 
 10. When _timer expires_, the callback function moves into the **callback queue**
-11. **Event Loop** checks the callback queue and puts the function inside it into the call stack
-12. Call stack then quickly executes the received callback function
+11. **Event Loop** checks the callback queue and puts the function inside it into the CS
+12. CS then quickly executes the received callback function
 
 - creates EC of callback fn
 - prints 'callback' into console
@@ -462,10 +462,10 @@ But in case of **event listener**s, when the **callback is registered**, it also
 Then remaining code executes. \
 But event handler callback fn sits there until its explicitly removed or browser is closed. (because it can be clicked anytime - so cannot be removed until the end) \
 When click event occurs, **callback fn is pushed to the callback queue**. \
-**Event loop repeatedly checks** if something is present in the CBQ, and if call stack is empty. \
+**Event loop repeatedly checks** if something is present in the CBQ, and if CS is empty. \
 As soon as CS is empty, and CBQ has something to be executed, it pushes that fn into CS \
 
-_Q. Why is Callback Queue required? Why can't the event loop directly push the fn into call stack as soon as it sees them?_
+_Q. Why is Callback Queue required? Why can't the event loop directly push the fn into CS as soon as it sees them?_
 
 - In case of multiple callbacks, they need to be queued and execeuted one by one (like clicking button 5-6 times repeatedly) -> all need to be executed one by one, and each is popped of the CBQ.
 
@@ -481,7 +481,7 @@ Higher priority callbacks from:
 - async/await
 - MutationObserver (checks for mutation in the DOM tree)
 
-Till all the tasks in Microtask queue are not executed, the event loop doesn't add any task from CBQ to call stack
+Till all the tasks in Microtask queue are not executed, the event loop doesn't add any task from CBQ to CS
 
 #### Callback Queue - CBQ
 
@@ -495,12 +495,12 @@ Lower priority callback tasks:
 
 #### Event loop
 
-Repeatedly checks - callback queue, microtask queue and call stack. \
+Repeatedly checks - callback queue, microtask queue and CS. \
 
-If Call Stack is empty:
+If CS is empty:
 
 - first check MTQ (higher in priority)
-- if it contains a fn, then remove it from queue and push it to call stack
+- if it contains a fn, then remove it from queue and push it to CS
 - execute it
 - check for next task in that queue
 
@@ -945,7 +945,7 @@ OUTPUT: Object -> Array of promise values (error or success) returned after all 
 - _All success_ - Returns array of promise values (success) after the last promise is resolved
 - _Any Error_ - Waits for all promises to settle, then returns array of resolved values or rejected errors in same order as input of promises
 
-3. **Promise.race()** 
+3. **Promise.race()**
 
 OUTPUT: Returns result of first settled promise (error or success)
 
@@ -960,10 +960,141 @@ OUTPUT: Returns result of first successfully resolved promise / AggregateError i
 - _First Error_ - Waits for a promise to be successful (ignores rejected promises)
 - _All Error_ - AggregateError (Array of all errors in correct order)
 
-
 ## Ep-05 Async Await
 
-Async function **always returns a promise**.
+Async function <mark>always returns a promise.</mark>
 
-- If I provide return value as promise, it returns that promise.
-- If I don't provide a promise, then it wraps the return value in a promise and then returns it as a promise.
+- If I provide return value as promise, it returns that as is.
+- If I don't provide a promise, then it wraps the return value in a promise and then returns it.
+
+Await **always used in front of a promise and inside an async function.**
+
+_Why async await?_
+
+- promise: JS engine doesn't wait for the promise to get resolved, it directly starts executing the next line.
+- async await: JS Engine will wait at the line where promise is being returned, and only after getting a value will it move to the next line.
+
+PROMISE
+
+```javascript
+const p = new Promise((resolve, reject) => {
+	setTimeout(() => {
+		resolve("Promise resolved!");
+	}, 5000);
+});
+
+function handlePromise() {
+	p.then((res) => {
+		console.log(res);
+	});
+	console.log("Doesn't wait for promise to be resolved, logged instantly");
+	console.log("res will be printed after this as it takes time to be resolved");
+}
+
+handlePromise();
+```
+
+- JS Engine will not wait for promise to be resolved
+- instead directly prints the console logs
+- after promise resolved, res is printed
+
+ASYNC AWAIT
+
+```javascript
+async function handlePromise() {
+	console.log("Logged instantly");
+	const val = await p;
+	console.log("After p resolved");
+	console.log(val);
+
+	const val2 = await p;
+	console.log("Promise resolved already won't wait ");
+	console.log(val2);
+}
+
+handlePromise();
+```
+
+- JS Engine will wait for promise to be resolved
+- after promise resolved, prints the console logs and res value in order
+- if promise called multiple times, it is resolved only once and uses the value from the first resolution
+
+### async await examples:
+
+```javascript
+1  const p1 = new Promise((resolve, reject) => {
+2    setTimeout(() => {
+3      resolve("Promise 1 resolved!");
+4    }, 10000);
+5  });
+6
+7  const p2 = new Promise((resolve, reject) => {
+8    setTimeout(() => {
+9      resolve("Promise 2 resolved!");
+10    }, 5000);
+11  });
+12
+13 async function handlePromise(){
+14   console.log("Logged instantly");
+15   const val1 = await p1;
+16   console.log("Promise 1");
+17   console.log(val1);
+18
+19   const val2 = await p2;
+20   console.log("Promise 2");
+21   console.log(val2);
+22 }
+23
+24 handlePromise();
+
+```
+
+- p1 takes 10 seconds, p2 takes 5 seconds
+- handlePromise goes in CS
+- it scans for all vars and async functions
+- they are being resolved in the background
+- 14: `Logged instantly` is printed immediately
+- 15: p1 value not yet present
+- handePromise exits the CS freeing the space for remaining execution
+- javascript engine only appears to be waiting for the promise to be resolved, NOT WAITING actually.
+- instead the thread of execution is not blocked, and handlePromise is out of CS.
+- after 10 seconds, 15: has its value, handlePromise enters CS again
+- logs the line 16 and 17
+- 19: has p2, which is already resolved(in 5 seconds)
+- logs the line 20 and 21 also together with 16 and 17.
+
+
+- p1 takes 5 seconds, p2 takes 10 seconds
+- handlePromise in CS
+- logs line 14
+- handlePromise is suspended, exits CS
+- p1 resolved in 5, 
+- handlePromise again enters CS
+- logs line 16 and 17
+- handlePromise exits CS
+- Remaining functions in JS main thread execute
+- after 10 seconds, p2 is resolved
+- handlePromise again enters CS
+- logs line 20 and 21
+- handlePromise exits CS
+
+---
+<mark> Q. *How fetch works?* </mark>
+- Fetch function itself is a **promise** that returns a *response object*. 
+- This Response Object has a body which is a *readable stream*. 
+- To get the required data from it in json format, we need to do ```.json()```; 
+- .json() is a promise which gives JSON value when resolved. 
+
+#### Error Handling:
+
+Using **try catch** : 
+```javascript
+try{
+  handlePromise();
+} 
+catch(error){
+  console.error(error);
+}
+```
+Or using catch block after the promise call: ```handlePromise.catch(error);```
+
