@@ -924,7 +924,7 @@ createOrder(cart)
 		console.log(err.message); //Catch block handles all errors on top of this.
 	});
 
-//IF YOU NEED TO PROCEED WITH THE PROMISES EVEN IF Catch block caches an error, USE catch() multiple times, and the '.then()' after the .catch() will still execute.
+//IF YOU NEED TO PROCEED WITH THE PROMISES EVEN IF Catch block catches an error, USE catch() multiple times, and the '.then()' after the .catch() will still execute.
 ```
 
 ## Ep-04 Promise APIs
