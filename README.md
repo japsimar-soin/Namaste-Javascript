@@ -42,7 +42,7 @@ take example:
   - All code is executed line-by-line and performs all calculations and functions
   - Line 1, Places the actual value of n in the memory
   - Skips the function code from line 2-5
-  - At line 6, it reads the sum fn, and can't assign a value to it directly, like other vars
+  - At line 6, it reads the square fn, and can't assign a value to it directly, like other vars
 
 | Variable Environment(Memory) |       Thread of Execution(Code) |
 | :--------------------------- | ------------------------------: |
