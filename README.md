@@ -51,7 +51,7 @@ take example:
 | square2: undefined           |                            Code |
 | square4: undefined           |                            Code |
 
-- Inside the Execution context created for sum function in Code component:
+- Inside the Execution context created for square function in Code component:
   - Jump to line 2
   - It creates a new exceution context for that invoked function in the thread of execution and it will have its own variable memeory and thread of execution
   - Inside new execution context memory component, ans and num variables are added
@@ -59,7 +59,7 @@ take example:
   - In its code component, it will calculate value for ans by **ans=num\*num** and assign it to ans, replacing undefined
   - At line 4, it sees return
   - Return means return the control back to the execution context from where the function was invoked
-  - So it returns the control to line 6 (where fun was invoked)
+  - So it returns the control to line 6 (where fn was invoked)
   - Having **ans = 4** it will replace the undefined for square2 in EC-1
   - Now it has returned the control to the original function invokation code line, EC-2 will be removed from the EC-1
   - At line 7, it wil again create a new exceution context for square fn.
