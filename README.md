@@ -94,7 +94,7 @@ An empty js file can act as the shortest JS program. \
 Even without any line of code -
 
 - It creates the GEC and sets up the memory space as well.
-- It creates a window object and a this pointer to it everytime.
+- It creates a window object and a ```this``` pointer to it everytime.
 - When a JS environment starts running:
   - It sets up the runtime (JS engine + environment features)
   - In Browser, it is:
@@ -116,10 +116,9 @@ Even without any line of code -
 | **function-scoped**, not block-scoped       | block-scoped live in lexical environment                                                                                       |
 | automatically attached to the global object | create global variables, but not global properties - Means they ARE accessible everywhere but they DO NOT appear inside window |
 | hoisted and accessible anywhere             | hoisted, but can't be used before initializing the value                                                                       |
+| value can be modified as they are accessible| they are safer to use as the value can't be modified anywhere randomly
 
 ## Ep-06 : undefined vs not defined
-
----
 
 - undefined is a special keyword acts like a placeholder
 - used to say - This variable exists, but no value has been assigned to it
@@ -141,8 +140,8 @@ Even without any line of code -
 
 **Lexical env** : Local memory + lexical env of parent
 
-- In each function memory space, a reference to lexical en of parent also exists
-- A function can have access to its own local memory and the lexical env of its parent (and consequently parent of parent)
+- In each function memory space, a reference to lexical env of parent also exists
+- A function can have access to its own local memory and lexical env of its parent (and consequently parent of parent)
 
 **Scope Chain** : Chain of all lexical environments in hierarchical order
 
@@ -1063,12 +1062,11 @@ handlePromise();
 - 19: has p2, which is already resolved(in 5 seconds)
 - logs the line 20 and 21 also together with 16 and 17.
 
-
 - p1 takes 5 seconds, p2 takes 10 seconds
 - handlePromise in CS
 - logs line 14
 - handlePromise is suspended, exits CS
-- p1 resolved in 5, 
+- p1 resolved in 5,
 - handlePromise again enters CS
 - logs line 16 and 17
 - handlePromise exits CS
@@ -1079,22 +1077,152 @@ handlePromise();
 - handlePromise exits CS
 
 ---
-<mark> Q. *How fetch works?* </mark>
-- Fetch function itself is a **promise** that returns a *response object*. 
-- This Response Object has a body which is a *readable stream*. 
-- To get the required data from it in json format, we need to do ```.json()```; 
-- .json() is a promise which gives JSON value when resolved. 
+
+<mark> Q. _How fetch works?_ </mark>
+
+- Fetch function itself is a **promise** that returns a _response object_.
+- This Response Object has a body which is a _readable stream_.
+- To get the required data from it in json format, we need to do `.json()`;
+- .json() is a promise which gives JSON value when resolved.
 
 #### Error Handling:
 
-Using **try catch** : 
+1. Using **try catch** :
+
 ```javascript
-try{
-  handlePromise();
-} 
-catch(error){
-  console.error(error);
+try {
+	handlePromise();
+} catch (error) {
+	console.error(error);
 }
 ```
-Or using catch block after the promise call: ```handlePromise.catch(error);```
 
+2. Using **catch block** after the promise call: `handlePromise.catch(error);`
+
+## Ep-06 : This keyword
+
+### this in global space
+
+```javascript
+console.log(this); //globalObject - window, global
+```
+
+- value = global object (depends on the runtime env - browser, node, etc)
+- in browser, global object = window
+- in nodeJS, global object = global
+- _also depends on how the function is called_
+
+### this inside function
+
+- value = undefined or global
+
+#### **this substitution**:
+
+If the value of this is undefined or null, `this` will be replaced with global object in non-strict mode
+
+<mark>Value of `this` keyword inside a function is undefined, and because JS uses **this substitution** - the value becomes _global object_ inside non-strict mode.</mark>
+
+---
+
+STRICT MODE
+
+```javascript
+"use sctrict";
+
+function fn() {
+	console.log(this); //undefined
+}
+fn();
+```
+
+- value = undefined
+- How function is called?
+  - `fn();` -> value = undefined
+  - `window.fn();` -> value = Window object
+
+NON-STRICT MODE
+
+```javascript
+function fn() {
+	console.log(this); //Window
+}
+fn();
+```
+
+- value = window
+- because this substitution happens (otherwise it is undefined only, but in non-strict mode, it becomes window object)
+
+### this inside object's method
+
+- value = object in which this keyword is present
+
+```javascript
+const obj = {
+  a: 10;
+  x: function(){
+    console.log(this);
+  }
+}
+
+obj.x(); // value of this will become the object 'obj'
+//this is present in object method, that object will be the value of this
+
+//`this.a` will print 10
+
+```
+
+### this with call apply bind method (sharing methods)
+
+- value = can be modified using call, apply, bind methods.
+
+---
+
+DIFFERENCE BETWEEN FUNCTION AND METHOD:
+
+_When a function is made part of an object, it becomes a method of that object_
+
+---
+
+### this inside arrow functions
+
+- value = no `this` binding associated with arrow fns, but they retain this value of the enclosing lexical content
+
+- Arrow functions take the value from lexical env where they are enclosed
+
+- To figure out its behavior: take the arrow function out of picture, and wherever `this` was placed, that tells the enclosing lexical env of this keyword there.
+
+### this inside DOM
+
+- value = reference to HTMLElement where this is present
+
+---
+
+### CALL APPLY BIND
+
+**_Function Borrowing_**: Borrow function from other objects and use it with data of another object
+
+```javascript
+let name1 = {
+  firstName: "John",
+  lastName: "Doe"
+
+  printFullName: function(){
+    console.log(this.firstName+" "+this.lastName);
+  }
+}
+
+name1.printFullName();
+
+let name2 = {
+  firstName: "James",
+  lastName: "Bond"
+}
+
+//Function Borrowing - CALL
+//Taking function from name1 obj and passing data of name2 obj
+name1.printFullName.call(name2);
+```
+
+- _Call_ - call the function with data of some other object and pass all args as comma separated values as `(object2, arg1, arg2 ..., argn)`
+- _Apply_ - call the function with data of some other object and pass args as arraylist `(object2, [arg1, arg2, ..., argn])`
+- Bind - same as call method, but it binds the method with a object and **returns the copy of that object.** It returns a method that can be called later.
