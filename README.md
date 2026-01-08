@@ -72,7 +72,7 @@ take example:
 
 ## Ep-03 : Hoisting
 
-Even before the code starts executing, memory is allocated to all the vars and fns
+<mark>Even before the code starts executing, memory is allocated to all the vars and fns</mark>
 
 - This is why JS won't throw an error even if I try to use a var before it is being declared in the code
 - For a function, it simply returns the function code for arrow functions and function value for other functions
