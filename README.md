@@ -2,7 +2,7 @@
 
 ## Ep-01 : How Javascript Works
 
-**Execution Context** : Everything in JS works inside th execution context. It looks like:
+**Execution Context** : Everything in JS works inside the execution context. It looks like:
 
 | Variable Environment(Memory)   |       Thread of Execution(Code) |
 | :----------------------------- | ------------------------------: |
@@ -42,16 +42,16 @@ take example:
   - All code is executed line-by-line and performs all calculations and functions
   - Line 1, Places the actual value of n in the memory
   - Skips the function code from line 2-5
-  - At line 6, it reads the sum fn, and can't assign a value to it directly, like other vars
+  - At line 6, it reads the square fn, and can't assign a value to it directly, like other vars
 
 | Variable Environment(Memory) |       Thread of Execution(Code) |
 | :--------------------------- | ------------------------------: |
 | n: undefined                 | Executes the code synchronously |
-| square: {... code}           |       Execution Context for sum |
+| square: {... code}           |    Execution Context for square |
 | square2: undefined           |                            Code |
 | square4: undefined           |                            Code |
 
-- Inside the Execution context created for sum function in Code component:
+- Inside the Execution context created for square function in Code component:
   - Jump to line 2
   - It creates a new exceution context for that invoked function in the thread of execution and it will have its own variable memeory and thread of execution
   - Inside new execution context memory component, ans and num variables are added
@@ -59,7 +59,7 @@ take example:
   - In its code component, it will calculate value for ans by **ans=num\*num** and assign it to ans, replacing undefined
   - At line 4, it sees return
   - Return means return the control back to the execution context from where the function was invoked
-  - So it returns the control to line 6 (where fun was invoked)
+  - So it returns the control to line 6 (where fn was invoked)
   - Having **ans = 4** it will replace the undefined for square2 in EC-1
   - Now it has returned the control to the original function invokation code line, EC-2 will be removed from the EC-1
   - At line 7, it wil again create a new exceution context for square fn.
@@ -72,7 +72,7 @@ take example:
 
 ## Ep-03 : Hoisting
 
-Even before the code starts executing, memory is allocated to all the vars and fns
+<mark>Even before the code starts executing, memory is allocated to all the vars and fns</mark>
 
 - This is why JS won't throw an error even if I try to use a var before it is being declared in the code
 - For a function, it simply returns the function code for arrow functions and function value for other functions
@@ -923,7 +923,7 @@ createOrder(cart)
 		console.log(err.message); //Catch block handles all errors on top of this.
 	});
 
-//IF YOU NEED TO PROCEED WITH THE PROMISES EVEN IF Catch block caches an error, USE catch() multiple times, and the '.then()' after the .catch() will still execute.
+//IF YOU NEED TO PROCEED WITH THE PROMISES EVEN IF Catch block catches an error, USE catch() multiple times, and the '.then()' after the .catch() will still execute.
 ```
 
 ## Ep-04 Promise APIs
