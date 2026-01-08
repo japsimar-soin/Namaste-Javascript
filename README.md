@@ -2,7 +2,7 @@
 
 ## Ep-01 : How Javascript Works
 
-**Execution Context** : Everything in JS works inside th execution context. It looks like:
+**Execution Context** : Everything in JS works inside the execution context. It looks like:
 
 | Variable Environment(Memory)   |       Thread of Execution(Code) |
 | :----------------------------- | ------------------------------: |
