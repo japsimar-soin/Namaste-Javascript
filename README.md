@@ -47,7 +47,7 @@ take example:
 | Variable Environment(Memory) |       Thread of Execution(Code) |
 | :--------------------------- | ------------------------------: |
 | n: undefined                 | Executes the code synchronously |
-| square: {... code}           |       Execution Context for sum |
+| square: {... code}           |    Execution Context for square |
 | square2: undefined           |                            Code |
 | square4: undefined           |                            Code |
 
